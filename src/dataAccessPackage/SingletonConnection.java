@@ -1,10 +1,10 @@
 package dataAccessPackage;
 import java.sql.*;
-public class Connexion {
+public class SingletonConnexion {
     public void getConnexion(){
         try {
             Connection connection =
-                    DriverManager.getConnection("jdbc:mysql://localhost:3306/library",
+                    DriverManager.getConnection("jdbc:mysql://localhost:3306/cinema?useSSL=false",
                             "root",
                             "Admin123");
 
@@ -13,6 +13,7 @@ public class Connexion {
             System.out.println(exception.getMessage());
 
         }
+
     }
 
 }
