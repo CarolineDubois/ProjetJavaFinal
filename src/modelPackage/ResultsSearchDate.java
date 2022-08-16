@@ -2,14 +2,14 @@ package modelPackage;
 
 import java.util.Date;
 
-public class ResultsSearch {
+public class ResultsSearchDate {
     private String identifier;
     private String firstName;
     private String lastName;
     private Date startDate;
     private Date endDate;
 
-    public ResultsSearch(String identifier, String firstName, String lastName, Date startDate, Date endDate) {
+    public ResultsSearchDate(String identifier, String firstName, String lastName, Date startDate, Date endDate) {
         this.identifier = identifier;
         this.firstName = firstName;
         this.lastName = lastName;

@@ -1,6 +1,5 @@
 package viewPackage;
 import exceptionPackage.AddPersonException;
-import exceptionPackage.ConnectionException;
 import modelPackage.Person;
 import controllerPackage.*;
 
@@ -11,25 +10,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-class BuyRegister
+class PanelRegister
         extends JFrame {
-
-    // Components of the Form
-   /*private Container c;
-    private JLabel title, lastName, firstName, middleName, isDisable, street, phoneNumber, birthDate, numberStreet, res;;
-    private JTextField tLastName, tFirstName, tMiddleName;
-    private JRadioButton disable;
-    private JRadioButton notDisable;
-    private ButtonGroup gengp;
-    private JComboBox date, month, year;
-    private JTextArea tStreet, tNumberStreet, tPhoneNumber;
-    private JCheckBox term;
-    private JButton sub, reset;
-    private JTextArea tout;
-
-    private JTextArea resadd;
-
-    */
 
     private String dates[]
             = {"1", "2", "3", "4", "5",
@@ -73,162 +55,13 @@ class BuyRegister
     private JPanel formPanel;
     private JPanel buttonsPanel;
     private ApplicationController controller;
-    public BuyRegister(Container frameContainer) {
+    public PanelRegister(Container frameContainer) {
         setTitle("Inscription");
         setBounds(300, 90, 625, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
 
-        /*
 
-        c = getContentPane();
-        c.setLayout(null);
-
-        title = new JLabel("Formulaire d'inscription");
-        title.setFont(new Font("Arial", Font.PLAIN, 30));
-        title.setSize(400, 30);
-        title.setLocation(150, 30);
-        c.add(title);
-
-        lastName = new JLabel("Nom*");
-        lastName.setFont(new Font("Arial", Font.PLAIN, 20));
-        lastName.setSize(100, 20);
-        lastName.setLocation(150, 100);
-        c.add(lastName);
-
-        tLastName = new JTextField();
-        tLastName.setFont(new Font("Arial", Font.PLAIN, 15));
-        tLastName.setSize(150, 20);
-        tLastName.setLocation(300, 100);
-        c.add(tLastName);
-
-        firstName = new JLabel("Prénom*");
-        firstName.setFont(new Font("Arial", Font.PLAIN, 20));
-        firstName.setSize(150, 20);
-        firstName.setLocation(150, 150);
-        c.add(firstName);
-
-        tFirstName = new JTextField();
-        tFirstName.setFont(new Font("Arial", Font.PLAIN, 15));
-        tFirstName.setSize(150, 20);
-        tFirstName.setLocation(300, 150);
-        c.add(tFirstName);
-
-        middleName = new JLabel("Second Prénom");
-        middleName.setFont(new Font("Arial", Font.PLAIN, 20));
-        middleName.setSize(150, 20);
-        middleName.setLocation(150, 200);
-        c.add(middleName);
-
-        tMiddleName = new JTextField();
-        tMiddleName.setFont(new Font("Arial", Font.PLAIN, 15));
-        tMiddleName.setSize(150, 20);
-        tMiddleName.setLocation(300, 200);
-        c.add(tMiddleName);
-
-        isDisable = new JLabel("Est invalide ?*");
-        isDisable.setFont(new Font("Arial", Font.PLAIN, 20));
-        isDisable.setSize(150, 20);
-        isDisable.setLocation(150, 250);
-        c.add(isDisable);
-
-        notDisable = new JRadioButton("Non");
-        notDisable.setFont(new Font("Arial", Font.PLAIN, 15));
-        notDisable.setSelected(true);
-        notDisable.setSize(75, 20);
-        notDisable.setLocation(300, 250);
-        c.add(notDisable);
-
-        disable = new JRadioButton("Oui");
-        disable.setFont(new Font("Arial", Font.PLAIN, 15));
-        disable.setSelected(false);
-        disable.setSize(80, 20);
-        disable.setLocation(375, 250);
-        c.add(disable);
-
-        gengp = new ButtonGroup();
-        gengp.add(disable);
-        gengp.add(notDisable);
-
-        birthDate = new JLabel("Date of birth*");
-        birthDate.setFont(new Font("Arial", Font.PLAIN, 20));
-        birthDate.setSize(150, 20);
-        birthDate.setLocation(150, 300);
-        c.add(birthDate);
-
-        date = new JComboBox(dates);
-        date.setFont(new Font("Arial", Font.PLAIN, 15));
-        date.setSize(50, 20);
-        date.setLocation(300, 300);
-        c.add(date);
-
-        month = new JComboBox(months);
-        month.setFont(new Font("Arial", Font.PLAIN, 15));
-        month.setSize(60, 20);
-        month.setLocation(350, 300);
-        c.add(month);
-
-        year = new JComboBox(years);
-        year.setFont(new Font("Arial", Font.PLAIN, 15));
-        year.setSize(60, 20);
-        year.setLocation(420, 300);
-        c.add(year);
-
-        street = new JLabel("Adresse*");
-        street.setFont(new Font("Arial", Font.PLAIN, 20));
-        street.setSize(100, 20);
-        street.setLocation(150, 350);
-        c.add(street);
-
-        tStreet = new JTextArea();
-        tStreet.setFont(new Font("Arial", Font.PLAIN, 15));
-        tStreet.setSize(200, 40);
-        tStreet.setLocation(300, 350);
-        tStreet.setLineWrap(true);
-        c.add(tStreet);
-
-        numberStreet = new JLabel("Numéro*");
-        numberStreet.setFont(new Font("Arial", Font.PLAIN, 20));
-        numberStreet.setSize(100, 20);
-        numberStreet.setLocation(150, 400);
-        c.add(numberStreet);
-
-        tNumberStreet = new JTextArea();
-        tNumberStreet.setFont(new Font("Arial", Font.PLAIN, 15));
-        tNumberStreet.setSize(50, 30);
-        tNumberStreet.setLocation(300, 400);
-        tNumberStreet.setLineWrap(true);
-        c.add(tNumberStreet);
-
-        phoneNumber = new JLabel("Numéro de téléphone*");
-        phoneNumber.setFont(new Font("Arial", Font.PLAIN, 20));
-        phoneNumber.setSize(150, 20);
-        phoneNumber.setLocation(150, 450);
-        c.add(phoneNumber);
-
-        tPhoneNumber = new JTextArea();
-        tPhoneNumber.setFont(new Font("Arial", Font.PLAIN, 15));
-        tPhoneNumber.setSize(50, 30);
-        tPhoneNumber.setLocation(300, 450);
-        tPhoneNumber.setLineWrap(true);
-        c.add(tPhoneNumber);
-
-
-        sub = new JButton("Submit");
-        sub.setFont(new Font("Arial", Font.PLAIN, 15));
-        sub.setSize(100, 20);
-        sub.setLocation(200, 500);
-        sub.addActionListener(new ValidateListener());
-        c.add(sub);
-
-        reset = new JButton("Reset");
-        reset.setFont(new Font("Arial", Font.PLAIN, 15));
-        reset.setSize(100, 20);
-        reset.setLocation(320, 500);
-        c.add(reset);
-
-        setVisible(true);
-        */
         Person person;
 
 
@@ -296,7 +129,6 @@ class BuyRegister
         isDisabledBox = new JCheckBox("Handicape");
         isDisabledBox.setFont(new Font("Arial", Font.PLAIN, 20));
 
-        //isDisabledBox.addItemListener(new isBoundedListener());
 
         phoneNumber = new JLabel("Numéro de téléphone");
         phoneNumber.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -309,8 +141,6 @@ class BuyRegister
         this.formPanel = new JPanel();
         formPanel.setLayout(new GridLayout(0, 2, 20, 20));
 
-        //formPanel.add(identifier);
-        //formPanel.add(identifierField);
         formPanel.add(lastName);
         formPanel.add(lastNameField);
         formPanel.add(firstName);
@@ -366,7 +196,7 @@ class BuyRegister
                                     frameContainer.removeAll();
                                     frameContainer.revalidate();
                                     frameContainer.repaint();
-                                    frameContainer.add(new BuyRegister(frameContainer));
+                                    frameContainer.add(new PanelRegister(frameContainer));
                                 } catch (AddPersonException exception) {
                                     JOptionPane.showMessageDialog(null, exception.getMessage());
                                 }
@@ -386,94 +216,8 @@ class BuyRegister
                     frameContainer.removeAll();
                     frameContainer.revalidate();
                     frameContainer.repaint();
-                    frameContainer.add(new BuyRegister(frameContainer));
+                    frameContainer.add(new PanelRegister(frameContainer));
                 }
             }
 }
 
-/*
-
-// Driver Code
-class Registration {
-
-    public static void main(String[] args) throws Exception
-    {
-        BuyRegister f = new BuyRegister(frameContainer);
-    }
-}
-
- tout = new JTextArea();
-        tout.setFont(new Font("Arial", Font.PLAIN, 15));
-        tout.setSize(300, 400);
-        tout.setLocation(500, 100);
-        tout.setLineWrap(true);
-        tout.setEditable(false);
-        c.add(tout);
-
-        res = new JLabel("");
-        res.setFont(new Font("Arial", Font.PLAIN, 20));
-        res.setSize(500, 25);
-        res.setLocation(100, 500);
-        c.add(res);
-
-        resadd = new JTextArea();
-        resadd.setFont(new Font("Arial", Font.PLAIN, 15));
-        resadd.setSize(200, 75);
-        resadd.setLocation(580, 175);
-        resadd.setLineWrap(true);
-        c.add(resadd);*/
-
-
-
-
-// method actionPerformed()
-// to get the action performed
-// by the user and act accordingly
-    /*
-    private class ValidateListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            if (e.getSource() == sub) {
-                if (term.isSelected()) {
-                    String data1;
-                    String data
-                            = "Prénom : "
-                            + firstName.getText() + "\n"
-                            + "Nom : "
-                            + lastName.getText() + "\n";
-                    if (disable.isSelected())
-                        data1 = "Est invalide : non "
-                                + "\n";
-                    else
-                        data1 = "Est invalide : oui"
-                                + "\n";
-                    String data2
-                            = "DOB : "
-                            + (String) date.getSelectedItem()
-                            + "/" + (String) month.getSelectedItem()
-                            + "/" + (String) year.getSelectedItem()
-                            + "\n";
-
-                    String data3 = "Address : " + tStreet.getText();
-                    tout.setText(data + data1 + data2 + data3);
-                    tout.setEditable(false);
-                    res.setText("Registration Successfully..");
-                } else {
-                    tout.setText("");
-                    resadd.setText("");
-                    res.setText("Please accept the"
-                            + " terms & conditions..");
-                }
-            } else if (e.getSource() == reset) {
-                String def = "";
-                tFirstName.setText(def);
-                tLastName.setText(def);
-                tStreet.setText(def);
-                res.setText(def);
-                tout.setText(def);
-                term.setSelected(false);
-                date.setSelectedIndex(0);
-                month.setSelectedIndex(0);
-                year.setSelectedIndex(0);
-                resadd.setText(def);
-            }
-            */

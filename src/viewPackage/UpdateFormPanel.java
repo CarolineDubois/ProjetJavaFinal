@@ -1,4 +1,4 @@
-package View;
+package viewPackage;
 
 import controllerPackage.ApplicationController;
 import exceptionPackage.*;
@@ -7,26 +7,15 @@ import modelPackage.Person;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class UpdateFormPanel extends JPanel {
-    private static int NB_PEOPLE = 5;
-    private static int NB_CATEGORIES = 4;
     private Container frameContainer;
     private JLabel identifier, lastName, firstName, middleName, street, streetNumber, birthdate, phoneNumber;
     private JTextField lastNameField, firstNamefield, middleNameField, streetField;
-    private JCheckBox isDisabledBox, storageBox;
-    private JSpinner DBAddingDateField, streetNumberField, phoneNumberField, identifierField;
-    private JComboBox categoryList, personList;
+    private JCheckBox isDisabledBox;
+    private JSpinner AddDateField, streetNumberField, phoneNumberField, identifierField;
     private Date today;
     private JButton validateButton;
     private JPanel formPanel;
@@ -85,14 +74,14 @@ public class UpdateFormPanel extends JPanel {
 
         Date dateField = person.getBirthDate().getTime();
 
-        DBAddingDateField = new JSpinner(new SpinnerDateModel(dateField, null, today, Calendar.MONTH));
-        JSpinner.DateEditor editor = new JSpinner.DateEditor(DBAddingDateField, "dd-MM-yyyy");
-        DBAddingDateField.setEditor(editor);
+        AddDateField = new JSpinner(new SpinnerDateModel(dateField, null, today, Calendar.MONTH));
+        JSpinner.DateEditor editor = new JSpinner.DateEditor(AddDateField, "dd-MM-yyyy");
+        AddDateField.setEditor(editor);
         birthdate.setHorizontalAlignment(SwingConstants.RIGHT);
 
         isDisabledBox = new JCheckBox("Handicape");
         isDisabledBox.setSelected(person.getIsDisable());
-        isDisabledBox.addItemListener(new isBoundedListener());
+       
 
         phoneNumber = new JLabel("Numéro de téléphone");
         phoneNumberField = new JSpinner(new SpinnerNumberModel(0.0, 0.0, null, 0.1));
@@ -104,7 +93,7 @@ public class UpdateFormPanel extends JPanel {
         phoneNumber.setHorizontalAlignment(SwingConstants.RIGHT);
 
 
-        // ------------------------------ FormPanel --------------------------------------
+        // Panel //
 
         this.formPanel = new JPanel();
         formPanel.setLayout(new GridLayout(0, 2, 5, 5));
@@ -129,13 +118,12 @@ public class UpdateFormPanel extends JPanel {
 
         this.add(formPanel, BorderLayout.CENTER);
 
-        // ----------------------- ButtonPanel ----------------------------
+        //  Button //
 
         this.buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new FlowLayout());
 
         validateButton = new JButton("Mettre à jour");
-        //validateButton.addActionListener(new ValidateListener());
 
         buttonsPanel.add(validateButton);
 
@@ -144,69 +132,3 @@ public class UpdateFormPanel extends JPanel {
         setVisible(true);
     }
 }
-/*
-
-    private class ValidateListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            Date date = (Date) DBAddingDateField.getValue();
-            GregorianCalendar calendar = new GregorianCalendar();
-            calendar.setTime(date);
-            person person;
-            Integer storageTemperature;
-            Double depositPrice;
-
-            if(storageBox.isSelected())
-                storageTemperature = Integer.parseInt(storageTemperatureField.getValue().toString());
-            else
-                storageTemperature = null;
-
-            if(isBoundedBox.isSelected())
-                depositPrice = Double.parseDouble(priceField.getValue().toString());
-            else
-                depositPrice = null;
-
-
-
-            Pattern patternPerson = Pattern.compile("\\(.*\\)", Pattern.CASE_INSENSITIVE);
-            Matcher matcher1 = patternPerson.matcher(personList.getSelectedItem().toString());
-
-            Pattern patternCategory = Pattern.compile("\\(.*\\)", Pattern.CASE_INSENSITIVE);
-            Matcher matcher2 = patternCategory.matcher(categoryList.getSelectedItem().toString());
-
-
-            if(matcher1.find() && matcher2.find()) {
-                try {
-                    person = new person(
-                            articleField.getText(),
-                            Double.parseDouble(priceField.getValue().toString()),
-                            isBoundedBox.isSelected(),
-                            depositPrice,
-                            storageTemperature,
-                            calendar,
-                            Integer.parseInt(matcher2.group(0).substring(1, 5)),
-                            matcher1.group(0).substring(1, 7)
-                    );
-                    try {
-                        controller.updateType(person);
-                        JOptionPane.showMessageDialog(null, "Mise à jour effectuée avec succès");
-                        frameContainer.removeAll();
-                        frameContainer.revalidate();
-                        frameContainer.repaint();
-                        frameContainer.add(new ListingPanel(frameContainer));
-                    }
-                    catch (UpdateException | ConnectionException exception) {
-                        JOptionPane.showMessageDialog(null, exception.getMessage());
-                    }
-                } catch (LabelException | PriceException exception) {
-                    JOptionPane.showMessageDialog(null, exception.getMessage());
-                }
-
-
-            } else {
-                JOptionPane.showMessageDialog(null, new UpdateException().getMessage());
-            }
-        }
-    }
-
-}
-

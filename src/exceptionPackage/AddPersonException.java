@@ -1,8 +1,8 @@
 package exceptionPackage;
 
-public class AddTypeException extends Exception {
+public class AddPersonException extends Exception {
 
     public String getMessage() {
-        return "Ajout d'un nouveau type impossible";
+        return "Ajout d'une nouvelle personne impossible";
     }
 }

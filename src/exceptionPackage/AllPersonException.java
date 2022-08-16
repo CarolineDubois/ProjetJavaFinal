@@ -1,8 +1,8 @@
 package exceptionPackage;
 
-public class AllTypesException extends Exception {
+public class AllPersonException extends Exception {
 
     public String getMessage() {
-        return "Récupération de la liste des types impossible";
+        return "Récupération de la liste des personnes impossible";
     }
 }

@@ -1,7 +1,8 @@
 package dataAccessPackage;
 import java.sql.*;
-public class SingletonConnexion {
-    public void getConnexion(){
+public class SingletonConnection {
+    private static Connection uniqueConnection;
+    public static Connection getConnection(){
         try {
             Connection connection =
                     DriverManager.getConnection("jdbc:mysql://localhost:3306/cinema?useSSL=false",
@@ -13,7 +14,7 @@ public class SingletonConnexion {
             System.out.println(exception.getMessage());
 
         }
-
+        return uniqueConnection;
     }
 
 }

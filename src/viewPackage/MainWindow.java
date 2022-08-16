@@ -1,5 +1,7 @@
 package viewPackage;
 
+import exceptionPackage.ConnectionException;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -9,72 +11,79 @@ import java.awt.event.WindowEvent;
 
 public class MainWindow extends JFrame {
     private Container mainContainer;
-    private Container helpContainer;
     private WelcomeMessage panelWelcome;
-    private BuyRegister panelRegister;
     private JMenuBar menuBar;
-    private JMenu applicationMenu, studentMenu, infosMenu;
-    private JMenuItem exit, inscription, iesn, help;
+    private JMenu applicationMenu, inscriptionMenu, listing, recherche;
+    private JMenuItem exit, formulaire, spectateurs, spectateurDate;
     public MainWindow () {
-    // Appel au constructeur hérité en donnant un titre à la fenêtre
+    // Appel au constructeur hérité en donnant un titre à la fenêtre //
         super("Cinéma");
         // Positionnement de la fenêtre à l’écran :
-        setBounds(100, 100, 500, 500);
-    // Gestion de la fermeture de la fenêtre si clic sur icône X :
+        setBounds(100, 100, 1200, 800);
+    // Gestion de la fermeture de la fenêtre si clic sur icône X : //
         addWindowListener (new WindowAdapter() {
             public void windowClosing (WindowEvent e) {
                 System.exit(0);
             }
         } );
 
-// Récupération de la référence du conteneur de la fenêtre :
+
+    // Récupération de la référence du conteneur de la fenêtre : //
         mainContainer = this.getContentPane();
 
-
+    // ajout des panels //
         panelWelcome = new WelcomeMessage();
         mainContainer.setLayout((new BorderLayout()));
         mainContainer.add(panelWelcome, BorderLayout.CENTER);
 
+
+    // menu //
         menuBar = new JMenuBar();
         setJMenuBar(menuBar); // pour ajouter barre de menus à la fenêtre
 
         applicationMenu = new JMenu("Application"); // crée un menu
-        applicationMenu.setMnemonic('F'); // raccourci mnémonique : alt +F
+        applicationMenu.setMnemonic('f'); // raccourci mnémonique : alt +F
         menuBar.add(applicationMenu); // ajoute le menu Fichier à la barre de menus
 
         exit = new JMenuItem("Exit"); // crée une option de menu
         //exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
         applicationMenu.add(exit); // ajoute l'option de menu SOrtie au menu fichier
-        //exit.addActionListener(new ClosingListener());
+        exit.addActionListener(new ClosingListener());
 
 
-        studentMenu = new JMenu("Student");
-        studentMenu.setMnemonic('m');
-        menuBar.add(studentMenu);
+        inscriptionMenu = new JMenu("Inscription");
+        inscriptionMenu.setMnemonic('i');
+        menuBar.add(inscriptionMenu);
 
-        inscription = new JMenuItem("Inscription"); // crée une option de menu
-        //inscription.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
-        studentMenu.add(inscription); // ajoute l'option de menu SOrtie au menu fichier
+        formulaire = new JMenuItem("Formulaire"); // crée une option de menu
+        formulaire.addActionListener(new BuyListener());
+        inscriptionMenu.add(formulaire); // ajoute l'option de menu SOrtie au menu fichier
         //inscription.addActionListener(new InscriptionListener());
 
 
-        infosMenu = new JMenu("Infos");
-        infosMenu.setMnemonic('m');
-        menuBar.add(infosMenu);
-
-        iesn = new JMenuItem("IESN"); // crée une option de menu
-        //iesn.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
-        iesn.addActionListener(new BuyListener());
-        infosMenu.add(iesn); // ajoute l'option de menu SOrtie au menu fichier
+        listing = new JMenu("Listing");
+        listing.setMnemonic('l');
+        menuBar.add(listing);
 
 
-        help = new JMenuItem("Help"); // crée une option de menu
-        //help.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
-        infosMenu.add(help); // ajoute l'option de menu SOrtie au menu fichier
+        spectateurs = new JMenuItem("Liste des spectateurs"); // crée une option de menu
+        listing.add(spectateurs); // ajoute l'option de menu SOrtie au menu fichier
+        spectateurs.addActionListener(new ListingListener());
+
+
+        recherche = new JMenu("Recherche");
+        recherche.setMnemonic('r');
+        menuBar.add(recherche);
+
+        spectateurDate = new JMenuItem("Spectateurs par date"); // crée une option de menu
+        recherche.add(spectateurDate); // ajoute l'option de menu SOrtie au menu fichier
         //help.addActionListener(new HelpListener());
+        recherche.addActionListener(new SearchListener());
 
 
-// Affichage de la fenêtre :
+        mainContainer.add(new ThreadPanel(), BorderLayout.EAST);
+
+    // Affichage de la fenêtre : //
         setVisible(true);
 
 
@@ -90,12 +99,32 @@ public class MainWindow extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             mainContainer.removeAll();
-            BuyRegister panelRegister = new BuyRegister();
-            mainContainer.add(panelRegister);
+            mainContainer.add(new PanelRegister(mainContainer), BorderLayout.CENTER);
             setVisible(true);
+        }
 
+    }
+
+    private class ListingListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            try {
+                mainContainer.removeAll();
+                mainContainer.add(new ListingPanel(mainContainer), BorderLayout.CENTER);
+            } catch (ConnectionException exception) {
+                JOptionPane.showMessageDialog(null, exception.getMessage());
+            }
+            setVisible(true);
         }
     }
+
+    private class SearchListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            mainContainer.removeAll();
+            mainContainer.add(new SearchingPanel(mainContainer), BorderLayout.CENTER);
+            setVisible(true);
+        }
+    }
+
 
 
 }
