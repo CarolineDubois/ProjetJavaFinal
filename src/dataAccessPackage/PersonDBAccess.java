@@ -5,136 +5,147 @@ import modelPackage.*;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 
-public class PersonDBAccess implements PersonDataAccess {
-    private Connection connection;
+public class PersonDBAccess implements PersonInterface {
 
-    public PersonDBAccess() throws ConnectionException {
-        connection = SingletonConnection.getConnection();
+    public PersonDBAccess(){
     }
 
     @Override
-    public void addPerson(Person person) throws AddPersonException {
-        String sqlInstruction = "insert into person (identifier, firstName, lastName, middleName, street, streetNumber, birthDate, phoneNumber, isDisabled) values (?,?,?,?,?,?,?,?,?,?)";
-        GregorianCalendar calendar = person.getBirthDate();
-        java.sql.Date sqlDate = new Date(calendar.getTimeInMillis());
+    public void addPerson(Person person) throws AddDataException, ConnectionException {
+        String sqlInstruction = "insert into person (firstName, lastName, middleName, street, streetNumber, birthDate, phoneNumber, isDisabled, identifierLocality) values (?,?,?,?,?,?,?,?,?)";
+        java.sql.Date sqlDate = java.sql.Date.valueOf(person.getBirthDate());
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(sqlInstruction);
-            preparedStatement.setInt(1, person.getIdentifier());
-            preparedStatement.setString(2, person.getFistName());
-            preparedStatement.setString(3, person.getLastName());
-            preparedStatement.setString(4, person.getMiddleName());
-            preparedStatement.setString(5, person.getStreet());
-            preparedStatement.setInt(6, person.getStreetNumber());
-            preparedStatement.setDate(7, sqlDate);
-            preparedStatement.setInt(8, person.getPhoneNumber());
-            preparedStatement.setBoolean(9, person.getIsDisable());
-            preparedStatement.setInt(10, person.getIdentifierLocality());
+            PreparedStatement preparedStatement = SingletonConnection.getConnection().prepareStatement(sqlInstruction);
+            preparedStatement.setString(1, person.getFistName());
+            preparedStatement.setString(2, person.getLastName());
+            preparedStatement.setString(3, person.getMiddleName());
+            preparedStatement.setString(4, person.getStreet());
+            preparedStatement.setInt(5, person.getStreetNumber());
+            preparedStatement.setDate(6, sqlDate);
+            preparedStatement.setString(7, person.getPhoneNumber());
+            preparedStatement.setBoolean(8, person.getIsDisable());
+            preparedStatement.setInt(9, person.getIdentifierLocality());
+
 
             preparedStatement.executeUpdate();
 
-
-
         }
         catch(SQLException exception) {
-            throw new AddPersonException();
+            throw new AddDataException(exception.getMessage(), "personne");
+        } catch (ConnectionException exception){
+            throw new ConnectionException(exception.getMessage());
         }
     }
 
     @Override
-    public ArrayList<Person> getAllPerson() throws AllPersonException {
+    public ArrayList<Person> getAllPerson() throws GetDataException, ConnectionException {
         String sqlInstruction = "select * from person";
         ArrayList<Person> allPerson = new ArrayList<>();
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(sqlInstruction);
+            PreparedStatement preparedStatement = SingletonConnection.getConnection().prepareStatement(sqlInstruction);
             ResultSet data = preparedStatement.executeQuery();
             Person person;
-            GregorianCalendar calendar;
 
             while (data.next()) {
-                calendar = new GregorianCalendar();
-                calendar.setTime(data.getDate("birthday"));
                 person = new Person(
                         data.getInt("identifier"),
                         data.getString("firstName"),
                         data.getString("lastName"),
-                        data.getString("middleName"),
+                        null,
                         data.getString("street"),
                         data.getInt("streetNumber"),
-                        calendar,
-                        data.getInt("phoneNumber"),
-                        data.getBoolean("isDisable"),
+                        null,
+                        null,
+                        data.getBoolean("isDisabled"),
                         data.getInt("identifierLocality")
 
             );
-
+                Date birthDate = data.getDate("birthDate");
+                if(!data.wasNull()){
+                    person.setBirthDate(birthDate.toLocalDate());
+                }
+                String middleName = data.getString("middleName");
+                if(!data.wasNull()){
+                    person.setMiddleName(middleName);
+                }
+                String phoneNumber = data.getString("phoneNumber");
+                if(!data.wasNull()){
+                    person.setPhoneNumber(phoneNumber);
+                }
+                
                 allPerson.add(person);
             }
 
 
-            return null;
-        } catch (SQLException exception) {
-            throw new AllPersonException();
+            return allPerson;
+        } catch(SQLException exception) {
+            throw new GetDataException(exception.getMessage(), "personne");
+        } catch (ConnectionException exception){
+            throw new ConnectionException(exception.getMessage());
         }
     }
 
     @Override
-    public void updatePerson(Person person) throws UpdateException {
-        GregorianCalendar calendar = person.getBirthDate();
-        java.sql.Date sqlDate = new Date(calendar.getTimeInMillis());
-        String sqlInstruction = "update person set " +
-                "identifier = ?," +
-                "firstName = ?, " +
-                "lastName = ?, " +
-                "middleName = ?, " +
-                "street = ?, " +
-                "streetNumber = ? " +
-                "birthday = ?," +
-                "phoneNumber = ? " +
-                "isDisable = ?," +
-                "";
+    public void updatePerson(Person person) throws UpdateDataException, ConnectionException {
+        java.sql.Date sqlDate = java.sql.Date.valueOf(person.getBirthDate());
+        String sqlInstruction = "UPDATE person " +
+                "SET firstName = ?, " +
+                "    lastName = ?, " +
+                "    middleName = ?, " +
+                "    street = ?, " +
+                "    streetNumber = ?, " +
+                "    birthDate = ?, " +
+                "    phoneNumber = ?, " +
+                "    isDisabled = ?, " +
+                "    identifierLocality = ? " +
+                "WHERE identifier = ?;";
+
+
+
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(sqlInstruction);
-            preparedStatement.setInt(1, person.getIdentifier());
-            preparedStatement.setString(2, person.getFistName());
-            preparedStatement.setString(3, person.getLastName());
-            preparedStatement.setString(4, person.getMiddleName());
-            preparedStatement.setString(5, person.getStreet());
-            preparedStatement.setInt(6, person.getStreetNumber());
-            preparedStatement.setDate(7, sqlDate);
-            preparedStatement.setInt(8, person.getPhoneNumber());
-            preparedStatement.setBoolean(9, person.getIsDisable());
-            preparedStatement.setInt(10, person.getIdentifierLocality());
+            PreparedStatement preparedStatement = SingletonConnection.getConnection().prepareStatement(sqlInstruction);
+            preparedStatement.setString(1, person.getFistName());
+            preparedStatement.setString(2, person.getLastName());
+            preparedStatement.setString(3, person.getMiddleName());
+            preparedStatement.setString(4, person.getStreet());
+            preparedStatement.setInt(5, person.getStreetNumber());
+            preparedStatement.setDate(6, sqlDate);
+            preparedStatement.setString(7, person.getPhoneNumber());
+            preparedStatement.setBoolean(8, person.getIsDisable());
+            preparedStatement.setInt(9, person.getIdentifierLocality());
+            preparedStatement.setInt(10, person.getIdentifier());
+
+
 
             preparedStatement.executeUpdate();
 
 
         }
         catch(SQLException exception) {
-            throw new UpdateException();
+            throw new UpdateDataException(exception.getMessage(), "personne");
+        } catch (ConnectionException exception){
+            throw new ConnectionException(exception.getMessage());
         }
     }
 
     @Override
-    public void deletePerson(Person person) throws DeleteException {
+    public void deletePerson(Person person) throws DeleteDataException, ConnectionException {
         String sqlInstruction = "delete from person where identifier = ?";
-        String findArticles = "delete from uniquePerson where person = ?";
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(findArticles);
-            preparedStatement.setInt(1, person.getIdentifier());
-            preparedStatement.executeUpdate();
 
-            PreparedStatement preparedStatement2 = connection.prepareStatement(sqlInstruction);
+            PreparedStatement preparedStatement2 = SingletonConnection.getConnection().prepareStatement(sqlInstruction);
             preparedStatement2.setInt(1, person.getIdentifier());
             preparedStatement2.executeUpdate();
 
         }
         catch(SQLException exception) {
-            throw new DeleteException();
+            throw new DeleteDataException(exception.getMessage(), "personne");
+        } catch (ConnectionException exception){
+            throw new ConnectionException(exception.getMessage());
         }
     }
 }

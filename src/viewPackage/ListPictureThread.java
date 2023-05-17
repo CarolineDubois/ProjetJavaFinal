@@ -1,7 +1,5 @@
 package viewPackage;
 
-import exceptionPackage.ThreadException;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -15,6 +13,7 @@ public class ListPictureThread extends Thread{
             new File("src\\picturesThread\\picture2.jpg"),
             new File("src\\picturesThread\\picture3.jpg"),
             new File("src\\picturesThread\\picture4.jpg"),
+            new File("src\\picturesThread\\picture5.jpg"),
     };
 
 
@@ -39,7 +38,7 @@ public class ListPictureThread extends Thread{
                     i = 0;
 
                 bufferedImage = ImageIO.read(pictures[i]);
-                Image image = bufferedImage.getScaledInstance(400, 600, Image.SCALE_DEFAULT);
+                Image image = bufferedImage.getScaledInstance(400, 700, Image.SCALE_DEFAULT);
 
                 imageIcon = new ImageIcon(image);
                 label.setIcon(imageIcon);
@@ -47,7 +46,8 @@ public class ListPictureThread extends Thread{
                 threadPanel.repaint();
                 Thread.sleep(3000);
             } catch (Exception exception) {
-                System.out.println(new ThreadException().getMessage());
+                JOptionPane.showMessageDialog(null, exception.getMessage());
+
             }
         }
     }

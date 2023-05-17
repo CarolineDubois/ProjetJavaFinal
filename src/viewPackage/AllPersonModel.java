@@ -1,8 +1,10 @@
-package modelPackage;
+package viewPackage;
+
+import modelPackage.Person;
 
 import javax.swing.table.AbstractTableModel;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 
 
 public class AllPersonModel extends AbstractTableModel {
@@ -20,6 +22,7 @@ public class AllPersonModel extends AbstractTableModel {
         columnNames.add("Date de naissance");
         columnNames.add("Handicape");
         columnNames.add("Numéro de téléphone");
+        columnNames.add("Localité");
         this.contents = contents;
     }
 
@@ -49,12 +52,13 @@ public class AllPersonModel extends AbstractTableModel {
                         return null;
             case 4 : return person.getStreet();
             case 5 : return person.getStreetNumber();
-            case 6 : return person.getBirthDate().getTime();
+            case 6 : return person.getBirthDate();
             case 7 : return person.getIsDisable();
             case 8 : if (person.getPhoneNumber() != null)
                         return person.getPhoneNumber();
                     else
                         return null;
+            case 9 : return person.getIdentifierLocality();
             default: return null;
         }
     }
@@ -65,12 +69,13 @@ public class AllPersonModel extends AbstractTableModel {
         switch(column) {
             case 0 :
             case 5 :
+            case 9 :
             case 8 :
                 c = Integer.class; break;
 
             case 7 : c = Boolean.class; break;
 
-            case 6 : c = Date.class; break;
+            case 6 : c = LocalDate.class; break;
             default: c = String.class; break;
         }
         return c;

@@ -4,10 +4,14 @@ import java.time.LocalTime;
 
 public class Movie {
     private String title;
-    private LocalTime duration;
+    private Integer duration;
 
-    public Movie(String title, LocalTime duration) {
+    public Movie(String title, Integer duration) {
         this.title = title;
         this.duration = duration;
+    }
+
+    public String toString() {
+        return title;
     }
 }

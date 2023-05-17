@@ -1,5 +1,6 @@
 package viewPackage;
 
+import controllerPackage.ApplicationController;
 import exceptionPackage.ConnectionException;
 
 import javax.swing.*;
@@ -13,17 +14,25 @@ public class MainWindow extends JFrame {
     private Container mainContainer;
     private WelcomeMessage panelWelcome;
     private JMenuBar menuBar;
-    private JMenu applicationMenu, inscriptionMenu, listing, recherche;
-    private JMenuItem exit, formulaire, spectateurs, spectateurDate;
+    private ApplicationController controller;
+    private JMenu applicationMenu, inscriptionMenu, listing, search, businessTask;
+    private JMenuItem exit, formulaire, spectateurs, spectateurDate, locality, seats, menu;
     public MainWindow () {
     // Appel au constructeur hérité en donnant un titre à la fenêtre //
-        super("Cinéma");
+        super("Chill and Movies");
         // Positionnement de la fenêtre à l’écran :
-        setBounds(100, 100, 1200, 800);
+        setBounds(100, 20, 1200, 800);
     // Gestion de la fermeture de la fenêtre si clic sur icône X : //
         addWindowListener (new WindowAdapter() {
             public void windowClosing (WindowEvent e) {
-                System.exit(0);
+                try {
+                    controller = new ApplicationController();
+                    controller.closeConnection();
+                    System.exit(0);
+                } catch (ConnectionException exception) {
+                    JOptionPane.showMessageDialog(null, exception.getMessage());
+                }
+
             }
         } );
 
@@ -42,12 +51,15 @@ public class MainWindow extends JFrame {
         setJMenuBar(menuBar); // pour ajouter barre de menus à la fenêtre
 
         applicationMenu = new JMenu("Application"); // crée un menu
-        applicationMenu.setMnemonic('f'); // raccourci mnémonique : alt +F
-        menuBar.add(applicationMenu); // ajoute le menu Fichier à la barre de menus
+        applicationMenu.setMnemonic('f');
+        menuBar.add(applicationMenu);
 
-        exit = new JMenuItem("Exit"); // crée une option de menu
-        //exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
-        applicationMenu.add(exit); // ajoute l'option de menu SOrtie au menu fichier
+        menu = new JMenuItem("Menu"); // crée une option de menu
+        applicationMenu.add(menu);
+        menu.addActionListener(new MenuListener());
+
+        exit = new JMenuItem("Exit");
+        applicationMenu.add(exit);
         exit.addActionListener(new ClosingListener());
 
 
@@ -55,10 +67,9 @@ public class MainWindow extends JFrame {
         inscriptionMenu.setMnemonic('i');
         menuBar.add(inscriptionMenu);
 
-        formulaire = new JMenuItem("Formulaire"); // crée une option de menu
-        formulaire.addActionListener(new BuyListener());
-        inscriptionMenu.add(formulaire); // ajoute l'option de menu SOrtie au menu fichier
-        //inscription.addActionListener(new InscriptionListener());
+        formulaire = new JMenuItem("Formulaire");
+        formulaire.addActionListener(new FormListener());
+        inscriptionMenu.add(formulaire);
 
 
         listing = new JMenu("Listing");
@@ -66,22 +77,33 @@ public class MainWindow extends JFrame {
         menuBar.add(listing);
 
 
-        spectateurs = new JMenuItem("Liste des spectateurs"); // crée une option de menu
-        listing.add(spectateurs); // ajoute l'option de menu SOrtie au menu fichier
+        spectateurs = new JMenuItem("Liste des spectateurs");
+        listing.add(spectateurs);
         spectateurs.addActionListener(new ListingListener());
 
 
-        recherche = new JMenu("Recherche");
-        recherche.setMnemonic('r');
-        menuBar.add(recherche);
+        search = new JMenu("Recherches");
+        search.setMnemonic('r');
+        menuBar.add(search);
 
-        spectateurDate = new JMenuItem("Spectateurs par date"); // crée une option de menu
-        recherche.add(spectateurDate); // ajoute l'option de menu SOrtie au menu fichier
-        //help.addActionListener(new HelpListener());
-        recherche.addActionListener(new SearchListener());
+        spectateurDate = new JMenuItem("Spectateurs par date");
+        search.add(spectateurDate);
+        spectateurDate.addActionListener(new SearchListenerDate());
+
+        locality = new JMenuItem("Spectateurs par localité");
+        search.add(locality);
+        locality.addActionListener(new SearchListenerLocality());
+
+        businessTask = new JMenu("Tache métier");
+        menuBar.add(businessTask);
+
+        seats = new JMenuItem("Places disponibles");
+        businessTask.add(seats);
+        seats.addActionListener(new BusinessListener());
 
 
-        mainContainer.add(new ThreadPanel(), BorderLayout.EAST);
+
+
 
     // Affichage de la fenêtre : //
         setVisible(true);
@@ -91,15 +113,23 @@ public class MainWindow extends JFrame {
     public class ClosingListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.exit(0);
+            try {
+                controller = new ApplicationController();
+                controller.closeConnection();
+                System.exit(0);
+            } catch (ConnectionException exception) {
+                JOptionPane.showMessageDialog(null, exception.getMessage());
+            }
         }
+
     }
 
-    public class BuyListener implements ActionListener {
+    public class FormListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             mainContainer.removeAll();
             mainContainer.add(new PanelRegister(mainContainer), BorderLayout.CENTER);
+
             setVisible(true);
         }
 
@@ -107,24 +137,53 @@ public class MainWindow extends JFrame {
 
     private class ListingListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            try {
-                mainContainer.removeAll();
-                mainContainer.add(new ListingPanel(mainContainer), BorderLayout.CENTER);
-            } catch (ConnectionException exception) {
-                JOptionPane.showMessageDialog(null, exception.getMessage());
-            }
+
+            mainContainer.removeAll();
+            mainContainer.add(new ListingPanel(mainContainer), BorderLayout.CENTER);
+
             setVisible(true);
         }
     }
 
-    private class SearchListener implements ActionListener {
+    private class SearchListenerDate implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+
+            mainContainer.removeAll();
+            mainContainer.add(new SearchingDatePanel(mainContainer), BorderLayout.CENTER);
+
+            setVisible(true);
+        }
+    }
+
+    private class SearchListenerLocality implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+
+            mainContainer.removeAll();
+            mainContainer.add(new SearchingLocalityPanel(mainContainer), BorderLayout.CENTER);
+
+            setVisible(true);
+        }
+    }
+    private class BusinessListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+
+            mainContainer.removeAll();
+            mainContainer.add(new SelectMoviePanel(mainContainer), BorderLayout.CENTER);
+
+            setVisible(true);
+        }
+    }
+    private class MenuListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             mainContainer.removeAll();
-            mainContainer.add(new SearchingPanel(mainContainer), BorderLayout.CENTER);
-            setVisible(true);
+            mainContainer.add(new WelcomeMessage(), BorderLayout.CENTER);
+
         }
     }
 
 
+    }
 
-}
+
+
+

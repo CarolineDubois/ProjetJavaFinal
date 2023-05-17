@@ -10,4 +10,17 @@ public class Locality {
         this.label = label;
         this.postalCode = postalCode;
     }
+
+    @Override
+    public String toString() {
+        return label + " - " + postalCode;
+    }
+
+    public Integer getIdentifier() {
+        return identifier;
+    }
+
+    public String getLabel() {
+        return label;
+    }
 }
